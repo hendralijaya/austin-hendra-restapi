@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Library RESTful API",
+    "description": "This is a simple RESTful API for a library",
+    "version": "1.0"
+  },
+  "servers": [{ "url": "http://localhost:3000/api/v1" }],
+  "paths": {
+    "/book": {
+      "get": {
+        "tags": ["Book API"],
+        "description": "List all books",
+        "summary": "List all books",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Book"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Book API"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateBook"
+              }
+            }
+          }
+        },
+        "description": "Create a new book",
+        "summary": "Create a new book",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/:bookId": {
+      "get": {
+        "tags": ["Book API"],
+        "description": "Get a book by id",
+        "summary": "Get a book by id",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "description": "Book ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Book API"],
+        "description": "Update a book",
+        "summary": "Update a book",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "description": "Book ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Book API"],
+        "description": "Delete a book",
+        "summary": "Delete a book",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "description": "Book ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writer": {
+      "get": {
+        "tags": ["Writer API"],
+        "description": "Get all writers",
+        "summary": "Get all writers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Writer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Writer API"],
+        "description": "Create a new writer",
+        "summary": "Create a new writer",
+        "parameters": [
+          {
+            "name": "writer",
+            "in": "body",
+            "description": "Writer",
+            "schema": {
+              "$ref": "#/components/schemas/CreateOrUpdateWriter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Writer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writer/:writerId": {
+      "get": {
+        "tags": ["Writer API"],
+        "description": "Get a writer by id",
+        "summary": "Get a writer by id",
+        "parameters": [
+          {
+            "name": "writerId",
+            "in": "path",
+            "description": "Writer ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Writer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Writer API"],
+        "description": "Update a writer",
+        "summary": "Update a writer",
+        "parameters": [
+          {
+            "name": "writerId",
+            "in": "path",
+            "description": "Writer ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Writer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Writer API"],
+        "description": "Delete a writer",
+        "summary": "Delete a writer",
+        "parameters": [
+          {
+            "name": "writerId",
+            "in": "path",
+            "description": "Writer ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Writer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "book_type": {
+            "type": "string"
+          },
+          "year_release": {
+            "type": "string"
+          },
+          "synopsis": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer"
+          },
+          "writerId": {
+            "type": "integer"
+          }
+        }
+      },
+      "Writer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrUpdateBook": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "book_type": {
+            "type": "string"
+          },
+          "year_release": {
+            "type": "string"
+          },
+          "synopsis": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer"
+          },
+          "writerId": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateOrUpdateWriter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
