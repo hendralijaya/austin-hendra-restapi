@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 
 	"gorm.io/gorm"
@@ -11,7 +12,7 @@ type BookRepository interface {
 	Insert(b domain.Book) domain.Book
 	Update(b domain.Book) domain.Book
 	Delete(b domain.Book)
-	FindById(bookId uint64) domain.Book
+	FindById(bookId uint64) (domain.Book, error)
 }
 
 type BookConnection struct {
@@ -44,8 +45,11 @@ func (db *BookConnection) Delete(book domain.Book) {
 	db.connection.Delete(&book)
 }
 
-func (db *BookConnection) FindById(id uint64) domain.Book {
+func (db *BookConnection) FindById(id uint64) (domain.Book, error) {
 	var book domain.Book
 	db.connection.Preload("Writer").Find(&book, id)
-	return book
+	if book.Id == 0 {
+		return book, errors.New("book not found")
+	}
+	return book, nil
 }

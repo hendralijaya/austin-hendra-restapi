@@ -3,6 +3,12 @@ module hendralijaya/austin-hendra-restapi
 go 1.18
 
 require (
+	github.com/pkg/errors v0.9.1
+	github.com/rs/cors v1.8.2
+	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
+)
+
+require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect

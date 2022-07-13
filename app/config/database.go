@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupDatabaseConnectionn() *gorm.DB {
+func SetupDatabaseConnection() *gorm.DB {
 	err := godotenv.Load()
 	helper.PanicIfError(err)
 

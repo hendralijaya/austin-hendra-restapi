@@ -1,68 +1,83 @@
 package middleware
 
 import (
-	"hendralijaya/austin-hendra-restapi/exception"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 )
 
-func ErrorHandler(c *gin.Context, err error) {
-	if validationErrors(c, err) {
-		return
-	}
-
-	if notFoundError(c, err) {
-		return
-	}
-	internalServerError(c, err)
+type ValidationError struct {
+	Key string `json:"key,omitempty"`
+	Message string `json:"message"`
 }
 
-func validationErrors(c *gin.Context, err interface{}) bool {
-	exception, ok := err.(validator.ValidationErrors)
-	if ok {
-		c.Header("Content-Type", "application/json")
-		c.Status(http.StatusBadRequest)
+func (e ValidationError) Error(splitedError []string) []ValidationError {
+	var errors []ValidationError
+	for _, error := range splitedError {
+		splittedError := strings.Split(error, "'")
+		errors = append(errors, ValidationError{
+			Key: splittedError[3],
+			Message: splittedError[4] + splittedError[5] + splittedError[6],
+		})
+	}
+	return errors
+}
 
-		webResponse := web.WebResponse{
-			Code:   http.StatusBadRequest,
-			Status: "BAD REQUEST",
-			Data:   exception.Error(),
+func ErrorHandler(c *gin.Context) {
+	c.Next()
+	if(c.Errors != nil){
+		err := c.Errors.Last()
+		if err.Meta == "VALIDATION_ERROR" {
+			validationErrors(c, err)
+			return
 		}
-		c.JSON(http.StatusBadRequest, webResponse)
-		return true
-	}else{
-		return false
+		if err.Meta == "NOT_FOUND" {
+			notFoundError(c, err)
+			return
+		}
+		internalServerError(c, err)
 	}
 }
 
-func notFoundError(c *gin.Context, err interface{}) bool {
-	exception, ok := err.(exception.NotFoundError)
-	if ok {
+func validationErrors(c *gin.Context, err *gin.Error) bool {
+	splittedError := strings.Split(err.Error(), "\n")
+	errors := ValidationError{}.Error(splittedError)
+	c.Header("Content-Type", "application/json")
+	c.Status(http.StatusBadRequest)
+	webResponse := web.WebResponse{
+		Code:   http.StatusBadRequest,
+		Status: "BAD REQUEST",
+		Errors: errors,
+		Data:   nil,
+	}
+	c.JSON(http.StatusBadRequest, webResponse)
+	return true
+}
+
+func notFoundError(c *gin.Context, err *gin.Error){
 		c.Header("Content-Type", "application/json")
 		c.Status(http.StatusNotFound)
 		webResponse := web.WebResponse{
-			Code: http.StatusNotFound,
+			Code:   http.StatusNotFound,
 			Status: "Not Found",
-			Errors: exception.Error,
+			Errors: err,
+			Data:   nil,
 		}
 		c.JSON(http.StatusNotFound, webResponse)
-		return true
-	}else {
-		return false
-	}
 }
 
-func internalServerError(c *gin.Context, err interface{}) {
+func internalServerError(c *gin.Context, err *gin.Error) {
 	c.Header("Content-Type", "application/json")
 	c.Status(http.StatusInternalServerError)
 
 	webResponse := web.WebResponse{
 		Code:   http.StatusInternalServerError,
 		Status: "INTERNAL SERVER ERROR",
-		Data:   err,
+		Errors: err,
+		Data:   nil,
 	}
 	c.JSON(http.StatusInternalServerError, webResponse)
 }
+

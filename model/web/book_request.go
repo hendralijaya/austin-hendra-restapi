@@ -1,24 +1,24 @@
 package web
 
 type BookCreateRequest struct {
-	Title        string `json:"title" validate:"required"`
-	Publisher    string `json:"publisher" validate:"required"`
-	BookType     string `json:"book_type" validate:"required"`
-	YearReleased string `json:"year_released" validate:"required"`
-	Synopsis     string `json:"synopsis" validate:"required"`
-	Genre        string `json:"genre" validate:"required"`
-	Stock        uint64 `json:"stock" validate:"required"`
-	WriterId     uint64 `json:"writer_id,omitempty"`
+	Title        string `json:"title" binding:"required"`
+	Publisher    string `json:"publisher" binding:"required"`
+	BookType     string `json:"book_type" binding:"required"`
+	YearReleased string `json:"year_released" binding:"required"`
+	Synopsis     string `json:"synopsis" binding:"required"`
+	Genre        string `json:"genre" binding:"required"`
+	Stock        uint64 `json:"stock" binding:"required"`
+	WriterId     uint64 `json:"writer_id,omitempty" binding:"required"`
 }
 
 type BookUpdateRequest struct {
-	Id           string `json:"id" validate:"required"`
-	Title        string `json:"title" validate:"required"`
-	Publisher    string `json:"publisher" validate:"required"`
-	BookType     string `json:"book_type" validate:"required"`
-	YearReleased string `json:"year_released" validate:"required"`
-	Synopsis     string `json:"synopsis" validate:"required"`
-	Genre        string `json:"genre" validate:"required"`
-	Stock        uint64 `json:"stock" validate:"required"`
-	WriterId     uint64 `json:"writer_id,omitempty"`
+	Id           uint64 `json:"id" binding:"required"`
+	Title        string `json:"title" binding:"required"`
+	Publisher    string `json:"publisher" binding:"required"`
+	BookType     string `json:"book_type" binding:"required"`
+	YearReleased string `json:"year_released" binding:"required"`
+	Synopsis     string `json:"synopsis" binding:"required"`
+	Genre        string `json:"genre" binding:"required"`
+	Stock        uint64 `json:"stock" binding:"required"`
+	WriterId     uint64 `json:"writer_id,omitempty" binding:"required"`
 }

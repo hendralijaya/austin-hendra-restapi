@@ -2,7 +2,6 @@ package controller
 
 import (
 	"hendralijaya/austin-hendra-restapi/helper"
-	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
 	"net/http"
@@ -40,17 +39,11 @@ func (c *bookController) All(ctx *gin.Context) {
 
 func (c *bookController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	helper.PanicIfError(err)
-	book := c.bookService.FindById(id)
-	if (book == domain.Book{}) {
-		webResponse := web.WebResponse{
-			Code: http.StatusNotFound,
-			Status: "Not Found",
-			Errors: nil,
-			Data: nil,
-		}
-		ctx.JSON(http.StatusNotFound, webResponse)
-	}
+	ok := helper.NotFoundError(ctx, err)
+	if ok {return}
+	book, err := c.bookService.FindById(id)
+	ok = helper.NotFoundError(ctx, err)
+	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "Success",
@@ -63,8 +56,11 @@ func (c *bookController) FindById(ctx *gin.Context) {
 func (c *bookController) Insert(ctx *gin.Context) {
 	var b web.BookCreateRequest
 	err := ctx.BindJSON(&b)
-	helper.PanicIfError(err)
-	book := c.bookService.Insert(b)
+	ok := helper.ValidationError(ctx, err)
+	if ok {return}
+	book, err := c.bookService.Insert(b)
+	ok = helper.ValidationError(ctx, err)
+	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "Success",
@@ -77,8 +73,13 @@ func (c *bookController) Insert(ctx *gin.Context) {
 func (c *bookController) Update(ctx *gin.Context) {
 	var b web.BookUpdateRequest
 	err := ctx.BindJSON(&b)
-	helper.PanicIfError(err)
-	book := c.bookService.Update(b)
+	ok := helper.ValidationError(ctx, err)
+	if ok {return}
+	book, err := c.bookService.Update(b)
+	if err != nil {
+		ctx.Error(err).SetMeta("NOT_FOUND")
+		return
+	}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "Success",
@@ -89,11 +90,12 @@ func (c *bookController) Update(ctx *gin.Context) {
 }
 
 func (c *bookController) Delete(ctx *gin.Context) {
-	var book domain.Book
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	helper.PanicIfError(err)
-	book.Id = id
-	c.bookService.Delete(book)
+	ok := helper.NotFoundError(ctx, err)
+	if ok {return}
+	err = c.bookService.Delete(id)
+	ok = helper.NotFoundError(ctx, err)
+	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "Success",
