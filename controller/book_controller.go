@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
@@ -39,10 +41,12 @@ func (c *bookController) All(ctx *gin.Context) {
 
 func (c *bookController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	ok := helper.NotFoundError(ctx, err)
-	if ok {return}
+	fmt.Println(id)
+	if(err != nil) {
+		helper.NotFoundError(ctx, errors.New("book not found"))
+	}
 	book, err := c.bookService.FindById(id)
-	ok = helper.NotFoundError(ctx, err)
+	ok := helper.NotFoundError(ctx, err)
 	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
@@ -62,12 +66,12 @@ func (c *bookController) Insert(ctx *gin.Context) {
 	ok = helper.ValidationError(ctx, err)
 	if ok {return}
 	webResponse := web.WebResponse{
-		Code: http.StatusOK,
+		Code: http.StatusCreated,
 		Status: "Success",
 		Errors: nil,
 		Data: book,
 	}
-	ctx.JSON(http.StatusOK, webResponse)
+	ctx.JSON(http.StatusCreated, webResponse)
 }
 
 func (c *bookController) Update(ctx *gin.Context) {
@@ -91,10 +95,11 @@ func (c *bookController) Update(ctx *gin.Context) {
 
 func (c *bookController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	ok := helper.NotFoundError(ctx, err)
-	if ok {return}
+	if(err != nil) {
+		helper.NotFoundError(ctx, errors.New("book not found"))
+	}
 	err = c.bookService.Delete(id)
-	ok = helper.NotFoundError(ctx, err)
+	ok := helper.NotFoundError(ctx, err)
 	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,

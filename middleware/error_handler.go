@@ -19,7 +19,7 @@ func (e ValidationError) Error(splitedError []string) []ValidationError {
 		splittedError := strings.Split(error, "'")
 		errors = append(errors, ValidationError{
 			Key: splittedError[3],
-			Message: splittedError[4] + splittedError[5] + splittedError[6],
+			Message: "Error :" + splittedError[4] + splittedError[5] + splittedError[6],
 		})
 	}
 	return errors
