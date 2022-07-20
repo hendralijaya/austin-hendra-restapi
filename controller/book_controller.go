@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
@@ -41,7 +40,6 @@ func (c *bookController) All(ctx *gin.Context) {
 
 func (c *bookController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	fmt.Println(id)
 	if(err != nil) {
 		helper.NotFoundError(ctx, errors.New("book not found"))
 	}
@@ -76,7 +74,12 @@ func (c *bookController) Insert(ctx *gin.Context) {
 
 func (c *bookController) Update(ctx *gin.Context) {
 	var b web.BookUpdateRequest
-	err := ctx.BindJSON(&b)
+	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
+	if(err != nil) {
+		helper.NotFoundError(ctx, errors.New("book not found"))
+	}
+	b.Id = id
+	err = ctx.BindJSON(&b)
 	ok := helper.ValidationError(ctx, err)
 	if ok {return}
 	book, err := c.bookService.Update(b)

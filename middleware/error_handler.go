@@ -44,8 +44,6 @@ func ErrorHandler(c *gin.Context) {
 func validationErrors(c *gin.Context, err *gin.Error) bool {
 	splittedError := strings.Split(err.Error(), "\n")
 	errors := ValidationError{}.Error(splittedError)
-	c.Header("Content-Type", "application/json")
-	c.Status(http.StatusBadRequest)
 	webResponse := web.WebResponse{
 		Code:   http.StatusBadRequest,
 		Status: "BAD REQUEST",
@@ -57,8 +55,6 @@ func validationErrors(c *gin.Context, err *gin.Error) bool {
 }
 
 func notFoundError(c *gin.Context, err *gin.Error){
-		c.Header("Content-Type", "application/json")
-		c.Status(http.StatusNotFound)
 		webResponse := web.WebResponse{
 			Code:   http.StatusNotFound,
 			Status: "Not Found",
@@ -69,9 +65,6 @@ func notFoundError(c *gin.Context, err *gin.Error){
 }
 
 func internalServerError(c *gin.Context, err *gin.Error) {
-	c.Header("Content-Type", "application/json")
-	c.Status(http.StatusInternalServerError)
-
 	webResponse := web.WebResponse{
 		Code:   http.StatusInternalServerError,
 		Status: "INTERNAL SERVER ERROR",

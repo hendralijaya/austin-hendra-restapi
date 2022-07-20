@@ -7,6 +7,7 @@ import (
 	"hendralijaya/austin-hendra-restapi/service"
 
 	"github.com/gin-gonic/gin"
+	cors "github.com/rs/cors/wrapper/gin"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,7 @@ func NewBookRoutes(db *gorm.DB, route *gin.Engine) {
 
 	bookRoute := route.Group("/api/v1")
 	bookRoute.Use(middleware.ErrorHandler)
+	bookRoute.Use(cors.Default())
 	bookRoute.GET("/book", bookController.All)
 	bookRoute.GET("/book/:bookId", bookController.FindById)
 	bookRoute.POST("/book", bookController.Insert)

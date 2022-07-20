@@ -8,7 +8,6 @@ import (
 	"hendralijaya/austin-hendra-restapi/repository"
 	"strconv"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/mashingan/smapping"
 )
 
@@ -23,7 +22,6 @@ type BookService interface {
 
 type bookService struct {
 	bookRepository repository.BookRepository
-	Validate *validator.Validate
 }
 
 func NewBookService (bookRepository repository.BookRepository) BookService {

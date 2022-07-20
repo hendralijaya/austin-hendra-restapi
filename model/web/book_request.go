@@ -12,7 +12,7 @@ type BookCreateRequest struct {
 }
 
 type BookUpdateRequest struct {
-	Id           uint64 `json:"id" binding:"required"`
+	Id           uint64
 	Title        string `json:"title" binding:"required"`
 	Publisher    string `json:"publisher" binding:"required"`
 	BookType     string `json:"book_type" binding:"required"`

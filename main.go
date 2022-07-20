@@ -22,11 +22,11 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 	err := godotenv.Load()
 	helper.PanicIfError(err)
-	router := SetupRouter()
+	router := setupRouter()
 	log.Fatal(router.Run(":" + os.Getenv("GO_PORT")))
 }
 
-func SetupRouter() *gin.Engine {
+func setupRouter() *gin.Engine {
 	err := godotenv.Load()
 	helper.PanicIfError(err)
 	/**
