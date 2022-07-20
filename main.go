@@ -55,6 +55,7 @@ func setupRouter() *gin.Engine {
 	@description Init All Route
 	*/
 	routes.NewBookRoutes(db, router)
+	routes.NewWriterRoutes(db, router)
 	router.Use(middleware.ErrorHandler)
 	router.Use(cors.Default())
 
