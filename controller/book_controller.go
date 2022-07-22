@@ -83,10 +83,8 @@ func (c *bookController) Update(ctx *gin.Context) {
 	ok := helper.ValidationError(ctx, err)
 	if ok {return}
 	book, err := c.bookService.Update(b)
-	if err != nil {
-		ctx.Error(err).SetMeta("NOT_FOUND")
-		return
-	}
+	ok = helper.NotFoundError(ctx, err)
+	if ok {return}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "Success",
