@@ -2,6 +2,7 @@ package routes
 
 import (
 	"hendralijaya/austin-hendra-restapi/controller"
+	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/middleware"
 	"hendralijaya/austin-hendra-restapi/repository"
 	"hendralijaya/austin-hendra-restapi/service"
@@ -16,7 +17,7 @@ func NewAuthenticationRoutes(db *gorm.DB, route *gin.Engine) {
 	authService := service.NewAuthService(userRepository)
 	authController := controller.NewAuthController(authService)
 
-	authRoute := route.Group("/api/v1")
+	authRoute := route.Group("/api/v1", helper.SetSession())
 	authRoute.Use(middleware.ErrorHandler)
 	authRoute.Use(cors.Default())
 	authRoute.POST("/login/", authController.Login)

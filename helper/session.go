@@ -8,12 +8,15 @@ import (
 
 const userKey = "session_id"
 
-// Use cookie for session id
-func SetSession() {
-	r := gin.Default()
-	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte(userKey))
-	r.Use(sessions.Sessions("mysession", store))
+// Use redis for session id
+func SetSession() gin.HandlerFunc {
+	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
+	return sessions.Sessions("mysession", store)
+}
 
+// Save session to redis
+func SaveSession(c *gin.Context, userID int) {
+	r := gin.Default()
 	r.GET("/incr", func(c *gin.Context) {
 		session := sessions.Default(c)
 		var count int
@@ -26,17 +29,7 @@ func SetSession() {
 		}
 		session.Set("count", count)
 		session.Save()
-		c.JSON(200, gin.H{"count": count})
 	})
-	r.Run(":8000")
-}
-
-
-// Save user session
-func SaveSession(c *gin.Context, userID int) {
-	session := sessions.Default(c)
-	session.Set(userKey, userID)
-	session.Save()
 }
 
 // Clear user session
