@@ -32,8 +32,7 @@ func ErrorHandler(c *gin.Context) {
 		if err.Meta == "VALIDATION_ERROR" {
 			validationErrors(c, err)
 			return
-		}
-		if err.Meta == "NOT_FOUND" {
+		}else if err.Meta == "NOT_FOUND" {
 			notFoundError(c, err)
 			return
 		}
