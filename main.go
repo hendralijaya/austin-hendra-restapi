@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var(
+var (
 	db *gorm.DB = config.SetupDatabaseConnection()
 )
 
@@ -32,7 +32,7 @@ func setupRouter() *gin.Engine {
 	/**
 	@description Setup Database Connection
 	*/
-	
+
 	/**
 	@description Init Router
 	*/
@@ -50,12 +50,13 @@ func setupRouter() *gin.Engine {
 	/**
 	@description Setup Middleware
 	*/
-	
+
 	/**
 	@description Init All Route
 	*/
 	routes.NewBookRoutes(db, router)
 	routes.NewWriterRoutes(db, router)
+	routes.NewAuthenticationRoutes(db, router)
 	router.Use(middleware.ErrorHandler)
 	router.Use(cors.Default())
 

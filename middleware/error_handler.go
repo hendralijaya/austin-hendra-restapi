@@ -9,7 +9,7 @@ import (
 )
 
 type ValidationError struct {
-	Key string `json:"key,omitempty"`
+	Key     string `json:"key,omitempty"`
 	Message string `json:"message"`
 }
 
@@ -18,7 +18,7 @@ func (e ValidationError) Error(splitedError []string) []ValidationError {
 	for _, error := range splitedError {
 		splittedError := strings.Split(error, "'")
 		errors = append(errors, ValidationError{
-			Key: splittedError[3],
+			Key:     splittedError[3],
 			Message: "Error :" + splittedError[4] + splittedError[5] + splittedError[6],
 		})
 	}
@@ -27,7 +27,7 @@ func (e ValidationError) Error(splitedError []string) []ValidationError {
 
 func ErrorHandler(c *gin.Context) {
 	c.Next()
-	if(c.Errors != nil){
+	if c.Errors != nil {
 		err := c.Errors.Last()
 		if err.Meta == "VALIDATION_ERROR" {
 			validationErrors(c, err)
@@ -37,11 +37,15 @@ func ErrorHandler(c *gin.Context) {
 			notFoundError(c, err)
 			return
 		}
+		if err.Meta == "UNAUTHORIZED" {
+			authenticationError(c, err)
+			return
+		}
 		internalServerError(c, err)
 	}
 }
 
-func validationErrors(c *gin.Context, err *gin.Error) bool {
+func validationErrors(c *gin.Context, err *gin.Error) {
 	splittedError := strings.Split(err.Error(), "\n")
 	errors := ValidationError{}.Error(splittedError)
 	webResponse := web.WebResponse{
@@ -51,17 +55,26 @@ func validationErrors(c *gin.Context, err *gin.Error) bool {
 		Data:   nil,
 	}
 	c.JSON(http.StatusBadRequest, webResponse)
-	return true
 }
 
-func notFoundError(c *gin.Context, err *gin.Error){
-		webResponse := web.WebResponse{
-			Code:   http.StatusNotFound,
-			Status: "Not Found",
-			Errors: err,
-			Data:   nil,
-		}
-		c.JSON(http.StatusNotFound, webResponse)
+func authenticationError(c *gin.Context, err *gin.Error) {
+	webResponse := web.WebResponse{
+		Code:   http.StatusUnauthorized,
+		Status: "UNAUTHORIZED",
+		Errors: err,
+		Data:   nil,
+	}
+	c.JSON(http.StatusUnauthorized, webResponse)
+}
+
+func notFoundError(c *gin.Context, err *gin.Error) {
+	webResponse := web.WebResponse{
+		Code:   http.StatusNotFound,
+		Status: "Not Found",
+		Errors: err,
+		Data:   nil,
+	}
+	c.JSON(http.StatusNotFound, webResponse)
 }
 
 func internalServerError(c *gin.Context, err *gin.Error) {
@@ -73,4 +86,3 @@ func internalServerError(c *gin.Context, err *gin.Error) {
 	}
 	c.JSON(http.StatusInternalServerError, webResponse)
 }
-
