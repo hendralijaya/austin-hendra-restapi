@@ -30,7 +30,7 @@ func NewBookController(bookService service.BookService) BookController {
 func (c *bookController) All(ctx *gin.Context) {
 	books := c.bookService.All()
 	webResponse := web.WebResponse{
-		Code:  http.StatusOK,
+		Code:   http.StatusOK,
 		Status: "Success",
 		Errors: nil,
 		Data:   books,
@@ -40,17 +40,19 @@ func (c *bookController) All(ctx *gin.Context) {
 
 func (c *bookController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	if(err != nil) {
+	if err != nil {
 		helper.NotFoundError(ctx, errors.New("book not found"))
 	}
 	book, err := c.bookService.FindById(id)
 	ok := helper.NotFoundError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	webResponse := web.WebResponse{
-		Code: http.StatusOK,
+		Code:   http.StatusOK,
 		Status: "Success",
 		Errors: nil,
-		Data: book,
+		Data:   book,
 	}
 	ctx.JSON(http.StatusOK, webResponse)
 }
@@ -59,15 +61,19 @@ func (c *bookController) Insert(ctx *gin.Context) {
 	var b web.BookCreateRequest
 	err := ctx.BindJSON(&b)
 	ok := helper.ValidationError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	book, err := c.bookService.Insert(b)
 	ok = helper.ValidationError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	webResponse := web.WebResponse{
-		Code: http.StatusCreated,
+		Code:   http.StatusCreated,
 		Status: "Success",
 		Errors: nil,
-		Data: book,
+		Data:   book,
 	}
 	ctx.JSON(http.StatusCreated, webResponse)
 }
@@ -75,38 +81,44 @@ func (c *bookController) Insert(ctx *gin.Context) {
 func (c *bookController) Update(ctx *gin.Context) {
 	var b web.BookUpdateRequest
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	if(err != nil) {
+	if err != nil {
 		helper.NotFoundError(ctx, errors.New("book not found"))
 	}
 	b.Id = id
 	err = ctx.BindJSON(&b)
 	ok := helper.ValidationError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	book, err := c.bookService.Update(b)
 	ok = helper.NotFoundError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	webResponse := web.WebResponse{
-		Code: http.StatusOK,
+		Code:   http.StatusOK,
 		Status: "Success",
 		Errors: nil,
-		Data: book,
+		Data:   book,
 	}
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
 func (c *bookController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("bookId"), 10, 64)
-	if(err != nil) {
+	if err != nil {
 		helper.NotFoundError(ctx, errors.New("book not found"))
 	}
 	err = c.bookService.Delete(id)
 	ok := helper.NotFoundError(ctx, err)
-	if ok {return}
+	if ok {
+		return
+	}
 	webResponse := web.WebResponse{
-		Code: http.StatusOK,
+		Code:   http.StatusOK,
 		Status: "Success",
 		Errors: nil,
-		Data: nil,
+		Data:   nil,
 	}
 	ctx.JSON(http.StatusOK, webResponse)
 }

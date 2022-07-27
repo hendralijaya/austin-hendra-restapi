@@ -8,7 +8,7 @@ func PanicIfError(err error) {
 	}
 }
 
-func NotFoundError(ctx *gin.Context,err error) bool {
+func NotFoundError(ctx *gin.Context, err error) bool {
 	if err != nil {
 		ctx.Error(err).SetMeta("NOT_FOUND")
 		return true
@@ -16,7 +16,7 @@ func NotFoundError(ctx *gin.Context,err error) bool {
 	return false
 }
 
-func ValidationError(ctx *gin.Context,err error) bool {
+func ValidationError(ctx *gin.Context, err error) bool {
 	if err != nil {
 		ctx.Error(err).SetMeta("VALIDATION_ERROR")
 		return true
@@ -24,9 +24,17 @@ func ValidationError(ctx *gin.Context,err error) bool {
 	return false
 }
 
-func InternalServerError(ctx *gin.Context,err error) bool {
+func InternalServerError(ctx *gin.Context, err error) bool {
 	if err != nil {
 		ctx.Error(err).SetMeta("INTERNAL_SERVER_ERROR")
+		return true
+	}
+	return false
+}
+
+func AuthenticationError(ctx *gin.Context, err error) bool {
+	if err != nil {
+		ctx.Error(err).SetMeta("UNAUTHORIZED")
 		return true
 	}
 	return false

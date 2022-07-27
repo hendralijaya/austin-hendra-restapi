@@ -12,7 +12,7 @@ import (
 )
 
 type BookService interface {
-	Insert(b web.BookCreateRequest) (domain.Book,error)
+	Insert(b web.BookCreateRequest) (domain.Book, error)
 	Update(b web.BookUpdateRequest) (domain.Book, error)
 	Delete(bookId uint64) error
 	FindById(bookId uint64) (domain.Book, error)
@@ -24,14 +24,14 @@ type bookService struct {
 	bookRepository repository.BookRepository
 }
 
-func NewBookService (bookRepository repository.BookRepository) BookService {
+func NewBookService(bookRepository repository.BookRepository) BookService {
 	return &bookService{bookRepository: bookRepository}
 }
 
 func (service *bookService) Insert(request web.BookCreateRequest) (domain.Book, error) {
 	book := domain.Book{}
 	err := smapping.FillStruct(&book, smapping.MapFields(&request))
-	if(err != nil) {
+	if err != nil {
 		return book, err
 	}
 	return service.bookRepository.Insert(book), nil
@@ -40,10 +40,10 @@ func (service *bookService) Insert(request web.BookCreateRequest) (domain.Book, 
 func (service *bookService) Update(request web.BookUpdateRequest) (domain.Book, error) {
 	bookRequest := domain.Book{}
 	err := smapping.FillStruct(&bookRequest, smapping.MapFields(&request))
-	if(err != nil) {
+	if err != nil {
 		return bookRequest, err
 	}
-	_ ,err = service.bookRepository.FindById(request.Id)
+	_, err = service.bookRepository.FindById(request.Id)
 	if err != nil {
 		return bookRequest, exception.NewNotFoundError(err.Error())
 	}
@@ -51,7 +51,7 @@ func (service *bookService) Update(request web.BookUpdateRequest) (domain.Book, 
 }
 
 func (service *bookService) Delete(bookId uint64) error {
-	book , err := service.bookRepository.FindById(bookId)
+	book, err := service.bookRepository.FindById(bookId)
 	if err != nil {
 		return exception.NewNotFoundError(err.Error())
 	}
