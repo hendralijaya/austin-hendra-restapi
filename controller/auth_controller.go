@@ -5,6 +5,7 @@ import (
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,10 +19,14 @@ type AuthController interface {
 
 type authController struct {
 	authService service.AuthService
+	jwtService service.JWTService
 }
 
-func NewAuthController(authService service.AuthService) AuthController {
-	return &authController{authService: authService}
+func NewAuthController(authService service.AuthService, jwtService service.JWTService) AuthController {
+	return &authController{
+		authService: authService,
+		jwtService:  jwtService,
+	}
 }
 
 func (c *authController) Login(ctx *gin.Context) {
@@ -61,6 +66,14 @@ func (c *authController) Register(ctx *gin.Context) {
 	if ok {
 		return
 	}
+	userIdString := strconv.FormatUint(user.Id, 10)
+	token, err := service.JWTService.GenerateToken(c.jwtService,userIdString,user.Username)
+	ok = helper.InternalServerError(ctx, err)
+	if ok {
+		return
+	}
+	mainLink := helper.GetMainLink()
+	helper.SendMail(`<a href="`+ mainLink+`/verify_register_token/`+token + `</a>`, "Verification Email",user.Email, "", "")
 	webResponse := web.WebResponse{
 		Code:   http.StatusCreated,
 		Status: "Success",
