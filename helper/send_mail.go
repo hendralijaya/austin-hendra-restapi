@@ -27,13 +27,13 @@ func SendMail(body string, subject string,to string, ccEmail string, ccName stri
 	mailer.SetHeader("Subject", subject)
 	mailer.SetBody("text/html", body)
 	dialer := gomail.Dialer{
-		Host: smtpHost,
-		Port: smtpPort,
+		Host:     smtpHost,
+		Port:     smtpPort,
 		Username: smtpUsername,
 		Password: smtpPassword,
 	}
 	err= dialer.DialAndSend(mailer)
     PanicIfError(err)
 
-    log.Println("Mail sent!")
+	log.Println("Mail sent!")
 }
