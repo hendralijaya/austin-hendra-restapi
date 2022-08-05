@@ -14,7 +14,8 @@ import (
 func NewAuthenticationRoutes(db *gorm.DB, route *gin.Engine) {
 	userRepository := repository.NewUserRepository(db)
 	authService := service.NewAuthService(userRepository)
-	authController := controller.NewAuthController(authService)
+	jwtService := service.NewJWTService()
+	authController := controller.NewAuthController(authService, jwtService)
 
 	authRoute := route.Group("/api/v1")
 	authRoute.Use(middleware.ErrorHandler)

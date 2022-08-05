@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 
 	"gorm.io/gorm"
@@ -25,8 +26,8 @@ func NewUserRepository(connection *gorm.DB) UserRepository {
 }
 
 func (c *UserConnection) Create(u domain.User) domain.User {
-	c.connection.Create(&u)
-	c.connection.Find(&u)
+	u.Password = helper.HashAndSalt([]byte(u.Password))
+	c.connection.Save(&u)
 	return u
 }
 

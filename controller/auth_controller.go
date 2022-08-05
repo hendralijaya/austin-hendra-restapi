@@ -2,6 +2,7 @@ package controller
 
 import (
 	"hendralijaya/austin-hendra-restapi/helper"
+	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
 	"net/http"
@@ -33,18 +34,28 @@ func (c *authController) Login(ctx *gin.Context) {
 	var u web.UserLoginRequest
 	err := ctx.BindJSON(&u)
 	ok := helper.ValidationError(ctx, err)
-
 	if ok {
 		return
 	}
-
 	user, err := c.authService.VerifyCredential(u)
 	ok = helper.ValidationError(ctx, err)
-
 	if ok {
 		return
 	}
-
+	if v, ok := user.(domain.User); ok {
+		generateToken, err := c.jwtService.GenerateToken(strconv.FormatUint(v.Id, 10), v.Username)
+		helper.InternalServerError(ctx, err)
+		v.Token = generateToken
+		webResponse := web.WebResponse{
+			Code:   http.StatusOK,
+			Status: "Success",
+			Errors: nil,
+			Data:   v,
+		}
+		ctx.JSON(http.StatusOK,webResponse)
+	    return
+	}
+	
 	webResponse := web.WebResponse{
 		Code:   http.StatusOK,
 		Status: "Success",
