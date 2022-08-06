@@ -116,7 +116,9 @@ func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
 	jwtToken, err := c.jwtService.ValidateToken(userToken)
 	helper.TokenError(ctx, err)
 	claims := jwtToken.Claims.(jwt.MapClaims)
-	userId := claims["user_id"].(uint64)
+	userIdString := claims["user_id"]
+	userId, err := strconv.ParseUint(userIdString.(string), 10, 64)
+	helper.InternalServerError(ctx, err)
 	user, err := c.authService.FindById(userId)
 	ok := helper.NotFoundError(ctx, err)
 	if ok {
