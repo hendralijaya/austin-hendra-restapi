@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
@@ -108,8 +109,6 @@ func (c *authController) Logout(ctx *gin.Context) {
 func (c *authController) ForgotPassword(ctx *gin.Context) {
 
 }
-<<<<<<< HEAD
-=======
 
 func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
 	userToken := ctx.Param("token")
@@ -117,6 +116,4 @@ func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
 	helper.TokenError(ctx, err)
 	claims := jwtToken.Claims.(jwt.MapClaims)
 	fmt.Println(claims)
-
-
 }
