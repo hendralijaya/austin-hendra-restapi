@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -105,5 +106,17 @@ func (c *authController) Logout(ctx *gin.Context) {
 }
 
 func (c *authController) ForgotPassword(ctx *gin.Context) {
+
+}
+<<<<<<< HEAD
+=======
+
+func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
+	userToken := ctx.Param("token")
+	jwtToken, err := c.jwtService.ValidateToken(userToken)
+	helper.TokenError(ctx, err)
+	claims := jwtToken.Claims.(jwt.MapClaims)
+	fmt.Println(claims)
+
 
 }
