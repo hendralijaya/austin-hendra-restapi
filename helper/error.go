@@ -39,3 +39,11 @@ func AuthenticationError(ctx *gin.Context, err error) bool {
 	}
 	return false
 }
+
+func TokenError(ctx *gin.Context, err error) bool {
+	if err != nil {
+		ctx.Error(err).SetMeta("TOKEN_ERROR")
+		return true
+	}
+	return false
+}
