@@ -12,6 +12,7 @@ type UserRepository interface {
 	Create(u domain.User) domain.User
 	Update(u domain.User) domain.User
 	// Delete(u domain.User)
+	FindById(id uint64) (domain.User, error)
 	VerifyCredential(userName, password string) (domain.User, error)
 	FindByEmail(email string) (domain.User, error)
 	IsDuplicateEmail(email string) (bool, error)
@@ -50,6 +51,15 @@ func (c *UserConnection) FindByEmail(email string) (domain.User, error) {
 	c.connection.Find(&user, "email = ?", email)
 	if user.Id != 0 {
 		return user, errors.New("email already exist")
+	}
+	return user, nil
+}
+
+func (c *UserConnection) FindById(id uint64) (domain.User, error) {
+	var user domain.User
+	c.connection.Find(&user, "id = ?", id)
+	if user.Id != 0 {
+		return user, errors.New("id not found")
 	}
 	return user, nil
 }

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
@@ -17,12 +16,11 @@ type AuthController interface {
 	Register(ctx *gin.Context)
 	Logout(ctx *gin.Context)
 	ForgotPassword(ctx *gin.Context)
-	VerifyRegisterToken(ctx *gin.Context)
 }
 
 type authController struct {
 	authService service.AuthService
-	jwtService service.JWTService
+	jwtService  service.JWTService
 }
 
 func NewAuthController(authService service.AuthService, jwtService service.JWTService) AuthController {
@@ -54,10 +52,10 @@ func (c *authController) Login(ctx *gin.Context) {
 			Errors: nil,
 			Data:   v,
 		}
-		ctx.JSON(http.StatusOK,webResponse)
-	    return
+		ctx.JSON(http.StatusOK, webResponse)
+		return
 	}
-	
+
 	webResponse := web.WebResponse{
 		Code:   http.StatusOK,
 		Status: "Success",
@@ -80,14 +78,13 @@ func (c *authController) Register(ctx *gin.Context) {
 		return
 	}
 	userIdString := strconv.FormatUint(user.Id, 10)
-	token, err := service.JWTService.GenerateToken(c.jwtService,userIdString,user.Username)
+	token, err := service.JWTService.GenerateToken(c.jwtService, userIdString, user.Username)
 	ok = helper.InternalServerError(ctx, err)
 	if ok {
 		return
 	}
 	mainLink := helper.GetMainLink()
-	fmt.Println(user)
-	helper.SendMail(`<a href="`+ mainLink+`/verify_register_token/`+token + ">click this link" + `</a>`, "Verification Email",user.Email, user.Email, user.Username)
+	helper.SendMail(`<a href="`+mainLink+`/verify_register_token/`+token+`</a>`, "Verification Email", user.Email, "", "")
 	webResponse := web.WebResponse{
 		Code:   http.StatusCreated,
 		Status: "Success",
@@ -108,13 +105,5 @@ func (c *authController) Logout(ctx *gin.Context) {
 }
 
 func (c *authController) ForgotPassword(ctx *gin.Context) {
-
-}
-
-func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
-	userToken := ctx.Param("token")
-	jwtToken, err := c.jwtService.ValidateToken(userToken)
-	helper.InternalServerError(ctx, err)
-	jwtToken.
 
 }

@@ -6,8 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const userKey = "session_id"
-
 // Use redis for session id
 func SetSession() gin.HandlerFunc {
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))

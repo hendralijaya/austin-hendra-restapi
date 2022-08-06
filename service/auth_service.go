@@ -9,8 +9,9 @@ import (
 )
 
 type AuthService interface {
-	VerifyCredential(b web.UserLoginRequest) (interface {}, error)
+	VerifyCredential(b web.UserLoginRequest) (interface{}, error)
 	Create(b web.UserRegisterRequest) (domain.User, error)
+	FindById(id uint64) (domain.User, error)
 	// Logout(u web.UserLogoutRequest) (domain.User, error)
 }
 
@@ -22,7 +23,7 @@ func NewAuthService(userRepository repository.UserRepository) AuthService {
 	return &authService{userRepository: userRepository}
 }
 
-func (s *authService) VerifyCredential(u web.UserLoginRequest) (interface {}, error) {
+func (s *authService) VerifyCredential(u web.UserLoginRequest) (interface{}, error) {
 	user, err := s.userRepository.VerifyCredential(u.Username, u.Password)
 	if err != nil {
 		return user, err
@@ -44,4 +45,12 @@ func (s *authService) Create(request web.UserRegisterRequest) (domain.User, erro
 	}
 
 	return s.userRepository.Create(user), nil
+}
+
+func (s *authService) FindById(id uint64) (domain.User, error) {
+	user, err := s.userRepository.FindById(id)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }

@@ -7,6 +7,6 @@ type User struct {
 	Username         string    `json:"username" gorm:"type:varchar(255);not null, unique"`
 	Password         string    `json:"password" gorm:"type:varchar(255);not null"`
 	Email            string    `json:"email" gorm:"type:varchar(255);not null, unique"`
-	VerificationTime time.Time `json:"verification_time" gorm:"type:datetime"`
+	VerificationTime time.Time `json:"verification_time" gorm:"type:timestamp"`
 	Token            string    `json:"token,omitempty" gorm:"-"`
 }
