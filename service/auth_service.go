@@ -12,6 +12,7 @@ type AuthService interface {
 	VerifyCredential(b web.UserLoginRequest) (interface{}, error)
 	Create(b web.UserRegisterRequest) (domain.User, error)
 	FindById(id uint64) (domain.User, error)
+	Update(b domain.User) (domain.User, error)
 	// Logout(u web.UserLogoutRequest) (domain.User, error)
 }
 
@@ -45,6 +46,14 @@ func (s *authService) Create(request web.UserRegisterRequest) (domain.User, erro
 	}
 
 	return s.userRepository.Create(user), nil
+}
+
+func (s *authService) Update(b domain.User) (domain.User, error) {
+	_,err := s.userRepository.FindById(b.Id)
+	if err != nil {
+		return b, err
+	}
+	return s.userRepository.Update(b), nil
 }
 
 func (s *authService) FindById(id uint64) (domain.User, error) {

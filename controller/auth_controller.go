@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
 	"hendralijaya/austin-hendra-restapi/service"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -18,6 +18,7 @@ type AuthController interface {
 	Register(ctx *gin.Context)
 	Logout(ctx *gin.Context)
 	ForgotPassword(ctx *gin.Context)
+	VerifyRegisterToken(ctx *gin.Context)
 }
 
 type authController struct {
@@ -115,5 +116,23 @@ func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
 	jwtToken, err := c.jwtService.ValidateToken(userToken)
 	helper.TokenError(ctx, err)
 	claims := jwtToken.Claims.(jwt.MapClaims)
-	fmt.Println(claims)
+	userId := claims["user_id"].(uint64)
+	user, err := c.authService.FindById(userId)
+	ok := helper.NotFoundError(ctx, err)
+	if ok {
+		return
+	}
+	user.VerificationTime = time.Now()
+	user, err = c.authService.Update(user)
+	ok = helper.NotFoundError(ctx, err)
+	if ok {
+		return
+	}
+	webResponse := web.WebResponse{
+		Code:   http.StatusOK,
+		Status: "Success",
+		Errors: nil,
+		Data:  user,
+	}
+	ctx.JSON(http.StatusOK, webResponse)
 }
