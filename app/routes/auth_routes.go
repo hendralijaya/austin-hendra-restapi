@@ -25,4 +25,5 @@ func NewAuthenticationRoutes(db *gorm.DB, route *gin.Engine) {
 	authRoute.POST("/register/", authController.Register)
 	authRoute.POST("/logout/", authController.Logout)
 	authRoute.POST("/forgot_password/", authController.ForgotPassword)
+	authRoute.POST("/verify_register_token/:token", authController.VerifyRegisterToken)
 }

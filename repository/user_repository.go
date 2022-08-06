@@ -43,7 +43,7 @@ func (c *UserConnection) VerifyCredential(userName, password string) (domain.Use
 func (c *UserConnection) FindByEmail(email string) (domain.User, error) {
 	var user domain.User
 	c.connection.Find(&user, "email = ?", email)
-	if user.Id == 0 {
+	if user.Id != 0 {
 		return user, errors.New("email already exist")
 	}
 	return user, nil

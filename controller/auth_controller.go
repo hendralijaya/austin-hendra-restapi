@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"hendralijaya/austin-hendra-restapi/helper"
 	"hendralijaya/austin-hendra-restapi/model/domain"
 	"hendralijaya/austin-hendra-restapi/model/web"
@@ -16,6 +17,7 @@ type AuthController interface {
 	Register(ctx *gin.Context)
 	Logout(ctx *gin.Context)
 	ForgotPassword(ctx *gin.Context)
+	VerifyRegisterToken(ctx *gin.Context)
 }
 
 type authController struct {
@@ -84,7 +86,8 @@ func (c *authController) Register(ctx *gin.Context) {
 		return
 	}
 	mainLink := helper.GetMainLink()
-	helper.SendMail(`<a href="`+ mainLink+`/verify_register_token/`+token + `</a>`, "Verification Email",user.Email, "", "")
+	fmt.Println(user)
+	helper.SendMail(`<a href="`+ mainLink+`/verify_register_token/`+token + ">click this link" + `</a>`, "Verification Email",user.Email, user.Email, user.Username)
 	webResponse := web.WebResponse{
 		Code:   http.StatusCreated,
 		Status: "Success",
@@ -105,5 +108,13 @@ func (c *authController) Logout(ctx *gin.Context) {
 }
 
 func (c *authController) ForgotPassword(ctx *gin.Context) {
+
+}
+
+func (c *authController) VerifyRegisterToken(ctx *gin.Context) {
+	userToken := ctx.Param("token")
+	jwtToken, err := c.jwtService.ValidateToken(userToken)
+	helper.InternalServerError(ctx, err)
+	jwtToken.
 
 }
